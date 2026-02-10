@@ -1,28 +1,65 @@
-class Person:
-    def __init__(self, name, age):
-        self.name = name          # atributo público
-        self.age = age            # atributo público
-        self.__password = self.__generate_password()  # atributo privado
+# Atributo privado: se define con doble guion bajo (__atributo).
+#                   Python lo restringe, no se puede acceder
+#                   directamente desde fuera de la clase.
+#
+# Metodo privado: se define con doble guion bajo (__metodo).
+#                 Solo se puede usar dentro de la clase.
+#                 El usuario de la clase no lo ve ni lo usa.
 
-    def __generate_password(self):
-        # método privado: genera una contraseña interna automáticamente
-        return f"$${self.name}{self.age}"
+class BankAccount:
 
-    def show_profile(self):
-        # método público: muestra información sin revelar datos privados
-        return f"Nombre: {self.name} | Edad: {self.age}"
+    def __init__(self, holder, balance):
+        self.__holder = holder      # Atributo privado
+        self.__balance = balance    # Atributo privado
 
-    def check_password(self, password):
-        # método público: permite validar la contraseña sin mostrarla
-        return password == self.__password
+    # Metodo privado
+    def __validate_amount(self, amount):
+        if amount <= 0:
+            print("El monto debe ser mayor a cero")
+            return False
+        return True
+
+    # Metodo publico
+    def deposit(self, amount):
+        if not self.__validate_amount(amount):
+            return
+        self.__balance += amount
+        print(f"Deposito de S/{amount:.2f} realizado")
+
+    # Metodo publico
+    def withdraw(self, amount):
+        if not self.__validate_amount(amount):
+            return
+        if amount > self.__balance:
+            print("Fondos insuficientes")
+            return
+        self.__balance -= amount
+        print(f"Retiro de S/{amount:.2f} realizado")
+
+    def __str__(self):
+        return f"{self.__holder} | S/{self.__balance:.2f}"
 
 
-person1 = Person("Ricardo", 29)
+# Creando objetos
+account1 = BankAccount("Ana Lopez", 1000)
+account2 = BankAccount("Carlos Ruiz", 2500)
 
-print(person1.show_profile())
+# Mostrando estado inicial
+print("--- Estado inicial ---")
+print(account1)
+print(account2)
 
-# No se puede acceder directamente (privado)
-# print(person1.__password)  # ERROR
+# Usando metodos publicos
+print("\n--- Operaciones ---")
+account1.deposit(300)
+account2.withdraw(500)
+account1.deposit(-100)
 
-print("Password correcta?", person1.check_password("$$Ricardo29"))
-print("Password correcta?", person1.check_password("1234"))
+# Esto genera error (AttributeError):
+# print(account1.__balance)          -> No se puede acceder al atributo privado
+# account1.__validate_amount(100)    -> No se puede acceder al metodo privado
+
+# Mostrando estado final
+print("\n--- Estado final ---")
+print(account1)
+print(account2)
