@@ -1,25 +1,3 @@
-"""
-Desarrolle un programa en Python que simule un mini sistema de ventas en consola, utilizando listas y diccionarios para almacenar información.
-
-El sistema debe manejar un catálogo de productos con los campos: id, nombre, precio y stock, y permitir al usuario interactuar mediante un menú de opciones.
-
-El programa debe permitir:
-
-Listar productos disponibles mostrando su información básica.
-
-Agregar productos al carrito ingresando el ID del producto y la cantidad.
-
-Validar que el producto exista, que la cantidad sea positiva y que haya stock suficiente.
-
-Si el producto ya existe en el carrito, se debe sumar la cantidad.
-
-Mostrar el carrito de compras, indicando el subtotal por producto y el total acumulado.
-
-Realizar el checkout (compra final) calculando el subtotal, el IGV (18%) y el total final.
-
-Al confirmar la compra, se debe actualizar el stock del catálogo y vaciar el carrito.
-"""
-
 productos = [
     {"id": 1, "nombre": "Mouse", "precio": 35.0, "stock": 10},
     {"id": 2, "nombre": "Teclado", "precio": 80.0, "stock": 8},
@@ -32,17 +10,31 @@ carrito = []  # {"id":1,"nombre":"Mouse","precio":35.0,"cantidad":2}
 
 
 def buscar_producto(prod_id):
+    # FOR TRADICIONAL: buscamos un solo producto
+    for p in productos:
+        if p["id"] == prod_id:
+            return p
+    return None
+
+
+def buscar_item_carrito(prod_id):
+    # FOR TRADICIONAL: buscamos un solo item en el carrito
+    for item in carrito:
+        if item["id"] == prod_id:
+            return item
+    return None
+
+
+def calcular_subtotal_carrito():
     # SIN LIST COMPREHENSION (versión tradicional)
-    # encontrado = None
-    # for p in productos:
-    #     if p["id"] == prod_id:
-    #         encontrado = p
-    #         break
+    # subtotal = 0
+    # for i in carrito:
+    #     subtotal += i["precio"] * i["cantidad"]
+    # return subtotal
 
-    # LIST COMPREHENSION: filtra productos y devuelve una lista con coincidencias
-    encontrado = [p for p in productos if p["id"] == prod_id]
+    # LIST COMPREHENSION: genera subtotales y sum() los suma
+    return sum([i["precio"] * i["cantidad"] for i in carrito])
 
-    return encontrado[0] if encontrado else None
 
 
 def listar_productos():
@@ -69,51 +61,19 @@ def agregar_carrito():
         print("Stock insuficiente.")
         return
 
-    # ==============================
-    # SIN LIST COMPREHENSION (claro)
-    # ==============================
-    #encontrado = False
+    item = buscar_item_carrito(prod_id)
 
-    #for i in carrito:
-    #    if i["id"] == prod_id:
-    #        i["cantidad"] += cantidad
-    #        encontrado = True
-    #        break
-
-    #if not encontrado:
-    #    carrito.append({
-    #        "id": prod["id"],
-    #        "nombre": prod["nombre"],
-    #        "precio": prod["precio"],
-    #        "cantidad": cantidad
-    #    })
-
-    # ================================================
-    # LIST COMPREHENSION (versión corta equivalente)
-    # recorre el carrito y crea una lista solo con los productos cuyo id sea igual a prod_id
-    # ================================================
-    item = [i for i in carrito if i["id"] == prod_id]
-    
-    # Si el producto NO está en el carrito:
-    item = []
-    
-    # Si el producto YA está en el carrito:
-    item = [{"id": 1, "nombre": "Mouse", "precio": 35.0, "cantidad": 2}]
-    
-    # Entonces:
-    # item[0] = {"id": 1, "nombre": "Mouse", "precio": 35.0, "cantidad": 2}
-    
     if item:
-       item[0]["cantidad"] += cantidad
+        item["cantidad"] += cantidad
+        print("Cantidad actualizada en el carrito.")
     else:
-      carrito.append({
-             "id": prod["id"],
-             "nombre": prod["nombre"],
-             "precio": prod["precio"],
-             "cantidad": cantidad
-         })
-
-    print("Agregado al carrito.")
+        carrito.append({
+            "id": prod["id"],
+            "nombre": prod["nombre"],
+            "precio": prod["precio"],
+            "cantidad": cantidad
+        })
+        print("Agregado al carrito.")
 
 
 def ver_carrito():
@@ -125,17 +85,10 @@ def ver_carrito():
     print("Nombre | Cant | Subtotal")
 
     for i in carrito:
-        subtotal = i["precio"] * i["cantidad"]
-        print(f'{i["nombre"]} | {i["cantidad"]} | S/ {subtotal}')
+        subtotal_producto = i["precio"] * i["cantidad"]
+        print(f'{i["nombre"]} | {i["cantidad"]} | S/ {subtotal_producto}')
 
-    # SIN LIST COMPREHENSION (versión tradicional)
-    # total = 0
-    # for i in carrito:
-    #     total += i["precio"] * i["cantidad"]
-
-    # LIST COMPREHENSION: genera lista de subtotales y sum() calcula el total
-    total = sum([i["precio"] * i["cantidad"] for i in carrito])
-
+    total = calcular_subtotal_carrito()
     print("Total:", total)
 
 
@@ -144,19 +97,13 @@ def checkout():
         print("Carrito vacío.")
         return
 
-    # SIN LIST COMPREHENSION (versión tradicional)
-    # subtotal = 0
-    # for i in carrito:
-    #     subtotal += i["precio"] * i["cantidad"]
+    subtotal_total_carrito = calcular_subtotal_carrito()
+    igv = subtotal_total_carrito * 0.18
+    total = subtotal_total_carrito + igv
 
-    # LIST COMPREHENSION: calcula subtotal sumando subtotales del carrito
-    subtotal = sum([i["precio"] * i["cantidad"] for i in carrito])
-
-    igv = subtotal * 0.18
-    total = subtotal + igv
 
     print("\nResumen:")
-    print("Subtotal:", subtotal)
+    print("Subtotal:", subtotal_total_carrito)
     print("IGV:", igv)
     print("Total:", total)
 
