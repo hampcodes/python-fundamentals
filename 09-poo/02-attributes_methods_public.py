@@ -1,30 +1,49 @@
-class Person:
-    institution = "CEIPRO"  # atributo de clase: todas las personas comparten esta institución
+# Atributos: son las variables que pertenecen al objeto.
+#            Almacenan los datos de cada cuenta (holder, balance).
+#
+# Metodos publicos: son funciones dentro de la clase que definen
+#                   el comportamiento del objeto. Cualquiera puede
+#                   usarlos desde fuera de la clase.
 
-    def __init__(self, name, age):
-        # Constructor: inicializa los atributos del objeto cuando se crea
-        self.name = name
-        self.age = age
+class BankAccount:
 
-    def show_profile(self):
-        # Método público: muestra la información completa de la persona
-        return f"Nombre: {self.name} | Edad: {self.age} | Institución: {self.institution}"
+    def __init__(self, holder, balance):
+        self.holder = holder      # Atributo
+        self.balance = balance    # Atributo
 
-    def is_adult(self):
-        # Método público: valida si la persona es mayor de edad
-        return self.age >= 18
+    # Metodo publico
+    def deposit(self, amount):
+        self.balance += amount
+        print(f"Deposito de S/{amount:.2f} realizado")
 
-    def enroll_course(self, course_name):
-        # Método público: registra a la persona en un curso
-        return f"{self.name} se matriculó en el curso: {course_name}"
+    # Metodo publico
+    def withdraw(self, amount):
+        if amount > self.balance:
+            print("Fondos insuficientes")
+            return
+        self.balance -= amount
+        print(f"Retiro de S/{amount:.2f} realizado")
+
+    def __str__(self):
+        return f"{self.holder} | S/{self.balance:.2f}"
 
 
-person1 = Person("Henry", 45)
+# Creando objetos
+account1 = BankAccount("Ana Lopez", 1000)
+account2 = BankAccount("Carlos Ruiz", 2500)
 
-print(person1.name)
-print(person1.age)
-print(person1.institution)
+# Mostrando estado inicial
+print("--- Estado inicial ---")
+print(account1)
+print(account2)
 
-print(person1.show_profile())
-print("¿Es mayor de edad?", person1.is_adult())
-print(person1.enroll_course("Python Básico"))
+# Usando metodos publicos
+print("\n--- Operaciones ---")
+account1.deposit(300)
+account2.withdraw(500)
+account2.withdraw(5000)
+
+# Mostrando estado final
+print("\n--- Estado final ---")
+print(account1)
+print(account2)
