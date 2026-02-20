@@ -1,0 +1,5 @@
+Laptop| 2500
+Mouse| 35
+Teclado| 35
+Monitor| 800
+Audifonos| 120

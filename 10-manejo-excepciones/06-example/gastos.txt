@@ -1,0 +1,7 @@
+REGISTRO DE GASTOS
+----------------------------------------
+Almuerzo|15.5|comida
+Taxi|8.0|transporte
+Cafe|5.0|comida
+
+TOTAL: S/28.50

@@ -1,0 +1,2 @@
+Laptop|2500
+Mouse|35
